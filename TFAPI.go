@@ -3,10 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/gorilla/mux"
 )
@@ -25,6 +25,8 @@ type Arbol struct {
 	accuracy   int
 	Pasos      int
 }
+
+var t Arbol
 
 //Recorrer recorre el arbol
 func (t *Arbol) Recorrer(nodo *Nodo) {
@@ -96,12 +98,15 @@ func indexRoute(w http.ResponseWriter, r *http.Request) {
 }
 
 func agregarRoute(w http.ResponseWriter, r *http.Request) {
-	reqBody, err := ioutil.ReadAll(r.Body)
-	peso, err := toInt(reqBody)
-	//t.Agregar(peso)
+	vars := mux.Vars(r)
+	peso, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		fmt.Fprintf(w, "Ingresa un numero")
+		log.Printf("Error leyendo numero: %v", err)
+		http.Error(w, "No se lee", http.StatusBadRequest)
+		return
 	}
+	t.Agregar(peso)
+
 }
 
 func arbolRoute(w http.ResponseWriter, r *http.Request) {
