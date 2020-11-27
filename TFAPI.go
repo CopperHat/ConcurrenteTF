@@ -116,15 +116,14 @@ func arbolRoute(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
-	router := mux.NewRouter().StrictSlash(true)
-
-	t := new(Arbol)
 	t.accuracy = 1
 
-	router.HandleFunc("/", indexRoute)
-	router.HandleFunc("/agregar/{id}", agregarRoute).Methods("POST")
-	router.HandleFunc("/arbol", arbolRoute)
+	router := mux.NewRouter().StrictSlash(true)
 
-	log.Fatal(http.ListenAndServe(":3000", router))
+	router.HandleFunc("/", indexRoute).Methods("GET")
+	router.HandleFunc("/arbol/{id}", agregarRoute).Methods("POST")
+	router.HandleFunc("/arbol", arbolRoute).Methods("GET")
+
+	log.Fatal(http.ListenAndServe(":9000", router))
 
 }
